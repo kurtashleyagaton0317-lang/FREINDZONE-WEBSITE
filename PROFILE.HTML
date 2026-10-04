@@ -1,0 +1,4402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FriendZone</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+
+.auth-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at top,#2563eb,#0f172a 65%);
+}
+
+.auth-box{
+    width:430px;
+    max-width:100%;
+    padding:35px;
+    background:#1e293b;
+    border:1px solid #d23003;
+    border-radius:25px;
+    box-shadow:0 25px 70px rgba(0,0,0,.6);
+}
+
+.auth-logo{
+    text-align:center;
+    font-size:36px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.auth-logo span,
+.logo span{
+    color:#3b82f6;
+}
+
+.auth-subtitle{
+    text-align:center;
+    color:#94a3b8;
+    margin-bottom:30px;
+}
+
+.auth-box h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    background:#0f172a;
+    color:white;
+    border:1px solid #334155;
+    border-radius:12px;
+    outline:none;
+}
+
+.input:focus{
+    border-color:#3b82f6;
+}
+
+.primary-btn{
+    width:100%;
+    padding:14px;
+    border:0;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+}
+
+.primary-btn:hover{
+    background:#1d4ed8;
+}
+
+.switch{
+    text-align:center;
+    margin-top:20px;
+    color:#60a5fa;
+    cursor:pointer;
+}
+
+
+#app{
+    display:none;
+    min-height:100vh;
+}
+
+.navbar{
+    min-height:70px;
+    background:#111827;
+    border-bottom:1px solid #334155;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:12px 5%;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+
+.search-wrapper{
+    flex:1;
+    max-width:500px;
+    position:relative;
+}
+
+.search-wrapper input{
+    width:100%;
+    padding:13px 18px;
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:25px;
+    color:white;
+    outline:none;
+}
+
+.search-results{
+    display:none;
+    position:absolute;
+    top:52px;
+    left:0;
+    width:100%;
+    background:#1e293b;
+    border:1px solid #475569;
+    border-radius:15px;
+    padding:8px;
+    max-height:450px;
+    overflow-y:auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+
+.search-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    border-radius:10px;
+}
+
+.search-user:hover{
+    background:#334155;
+}
+
+.search-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#2563eb;
+}
+
+.search-user-info{
+    flex:1;
+}
+
+.search-user-name{
+    font-weight:bold;
+}
+
+.search-user-email{
+    font-size:12px;
+    color:#94a3b8;
+}
+
+.search-user button{
+    border:0;
+    border-radius:8px;
+    padding:7px 10px;
+    background:#2563eb;
+    color:white;
+}
+
+
+.nav-right{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.nav-btn{
+    border:0;
+    border-radius:10px;
+    padding:10px 13px;
+    background:#1e293b;
+    color:white;
+}
+
+.nav-btn:hover{
+    background:#334155;
+}
+
+.signout{
+    background:#dc2626;
+}
+
+.settings-btn{
+    background:#7c3aed;
+}
+
+
+.container{
+    width:95%;
+    max-width:1400px;
+    margin:30px auto;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:280px 1fr 320px;
+    gap:20px;
+}
+
+.card{
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+
+.profile-card{
+    text-align:center;
+}
+
+.cover{
+    height:120px;
+    margin:-20px -20px 0;
+    border-radius:20px 20px 0 0;
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed,
+        #ec4899
+    );
+}
+
+.avatar{
+    width:100px;
+    height:100px;
+    margin:-50px auto 15px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#2563eb;
+    border:5px solid #1e293b;
+    font-size:45px;
+}
+
+.profile-card h2{
+    margin-bottom:5px;
+}
+
+.username{
+    color:#60a5fa;
+    margin-bottom:15px;
+}
+
+.bio{
+    color:#cbd5e1;
+    line-height:1.5;
+    word-wrap:break-word;
+}
+
+.website-link{
+    display:block;
+    margin-top:12px;
+    color:#60a5fa;
+    text-decoration:none;
+    font-weight:bold;
+    word-break:break-all;
+}
+
+.website-link:hover{
+    text-decoration:underline;
+}
+
+.edit-profile-btn{
+    margin-top:15px;
+    border:0;
+    background:#334155;
+    color:white;
+    padding:9px 13px;
+    border-radius:9px;
+}
+
+.profile-stats{
+    display:flex;
+    justify-content:space-around;
+    margin-top:20px;
+}
+
+.profile-stats strong{
+    display:block;
+    font-size:20px;
+}
+
+.profile-stats span{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+
+.streak-card{
+    text-align:center;
+    background:linear-gradient(135deg,#7c2d12,#dc2626);
+}
+
+.fire{
+    font-size:50px;
+}
+
+.streak-number{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.restore-btn{
+    margin-top:15px;
+    border:0;
+    padding:10px 15px;
+    border-radius:10px;
+    background:#f97316;
+    color:white;
+    font-weight:bold;
+}
+
+.restore-btn:hover{
+    background:#ea580c;
+}
+
+.restore-count{
+    color:#fed7aa;
+    font-size:12px;
+    margin-top:8px;
+}
+
+
+.create-post textarea{
+    width:100%;
+    min-height:110px;
+    resize:none;
+    padding:15px;
+    border:1px solid #334155;
+    border-radius:12px;
+    background:#0f172a;
+    color:white;
+    outline:none;
+    margin:15px 0;
+}
+
+.post-btn{
+    border:0;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    padding:12px 20px;
+}
+
+.post{
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.post-avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#3b82f6;
+}
+
+.post-user{
+    cursor:pointer;
+}
+
+.post-user:hover{
+    color:#60a5fa;
+}
+
+.post-time{
+    color:#64748b;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.post-content{
+    margin:18px 0;
+    color:#e2e8f0;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+}
+
+.post-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.post-actions button{
+    border:0;
+    border-radius:9px;
+    background:#334155;
+    color:white;
+    padding:8px 12px;
+}
+
+
+.friend{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #334155;
+}
+
+.friend:last-child{
+    border-bottom:none;
+}
+
+.friend-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.friend-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#7c3aed;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.friend-name{
+    cursor:pointer;
+}
+
+.friend-name:hover{
+    color:#60a5fa;
+}
+
+.friend-actions{
+    display:flex;
+    gap:5px;
+}
+
+.friend-actions button{
+    border:0;
+    border-radius:7px;
+    padding:7px;
+    background:#2563eb;
+    color:white;
+}
+
+
+.request{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid #334155;
+}
+
+.request-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#7c3aed;
+}
+
+.request-info{
+    flex:1;
+}
+
+.request-buttons{
+    display:flex;
+    gap:5px;
+}
+
+.accept-btn,
+.decline-btn{
+    border:0;
+    border-radius:7px;
+    color:white;
+    padding:7px;
+}
+
+.accept-btn{
+    background:#16a34a;
+}
+
+.decline-btn{
+    background:#dc2626;
+}
+
+
+.leaderboard-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid #334155;
+    cursor:pointer;
+}
+
+.leaderboard-row:last-child{
+    border-bottom:none;
+}
+
+.leaderboard-row:hover{
+    background:#263449;
+}
+
+.rank{
+    width:35px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.leaderboard-avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#2563eb;
+}
+
+.leaderboard-info{
+    flex:1;
+}
+
+.leaderboard-streak{
+    color:#f97316;
+    font-size:12px;
+}
+
+
+.message-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    margin-bottom:8px;
+    border-radius:14px;
+    background:#0f172a;
+    cursor:pointer;
+}
+
+.message-row:hover{
+    background:#334155;
+}
+
+.message-avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#2563eb;
+}
+
+.message-info{
+    flex:1;
+}
+
+.message-name{
+    font-weight:bold;
+}
+
+.last-message{
+    color:#94a3b8;
+    font-size:12px;
+    margin-top:4px;
+}
+
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    z-index:3000;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.modal-content{
+    width:500px;
+    max-width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+    background:#1e293b;
+    border:1px solid #475569;
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 25px 80px rgba(0,0,0,.7);
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.close-btn{
+    border:0;
+    background:none;
+    color:white;
+    font-size:25px;
+}
+
+
+.public-profile{
+    text-align:center;
+}
+
+.public-cover{
+    height:130px;
+    margin:-25px -25px 0;
+    border-radius:25px 25px 0 0;
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed,
+        #ec4899
+    );
+}
+
+.public-avatar{
+    width:110px;
+    height:110px;
+    margin:-55px auto 15px;
+    border-radius:50%;
+    border:5px solid #1e293b;
+    background:#2563eb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+}
+
+.public-bio{
+    color:#cbd5e1;
+    margin:15px 0;
+    line-height:1.6;
+}
+
+.public-website{
+    display:block;
+    color:#60a5fa;
+    margin:10px 0;
+    word-break:break-all;
+}
+
+.public-stats{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin:20px 0;
+}
+
+.public-stats strong{
+    display:block;
+    font-size:20px;
+}
+
+.public-stats span{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.profile-action{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.profile-action button{
+    border:0;
+    border-radius:10px;
+    padding:11px 15px;
+    color:white;
+    background:#2563eb;
+}
+
+
+
+.setting-group{
+    margin-bottom:25px;
+}
+
+.setting-group h3{
+    margin-bottom:12px;
+}
+
+.setting-option{
+    display:block;
+    padding:12px;
+    background:#0f172a;
+    border:1px solid #334155;
+    border-radius:10px;
+    margin-bottom:8px;
+    cursor:pointer;
+}
+
+.setting-option:hover{
+    border-color:#3b82f6;
+}
+
+.setting-option input{
+    margin-right:8px;
+}
+
+.save-settings{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+}
+
+
+
+.profile-edit-field{
+    margin-bottom:15px;
+}
+
+.profile-edit-field label{
+    display:block;
+    margin-bottom:7px;
+    color:#cbd5e1;
+    font-weight:bold;
+}
+
+.profile-edit-field textarea{
+    width:100%;
+    min-height:100px;
+    resize:none;
+    padding:12px;
+    background:#0f172a;
+    color:white;
+    border:1px solid #334155;
+    border-radius:10px;
+    outline:none;
+}
+
+.profile-edit-field input{
+    width:100%;
+    padding:12px;
+    background:#0f172a;
+    color:white;
+    border:1px solid #334155;
+    border-radius:10px;
+    outline:none;
+}
+
+.save-profile{
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+}
+
+
+
+.chat-window{
+    display:none;
+    position:fixed;
+    right:30px;
+    bottom:30px;
+    width:370px;
+    height:520px;
+    background:#1e293b;
+    border:1px solid #475569;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 25px 70px rgba(0,0,0,.7);
+    z-index:2500;
+}
+
+.chat-header{
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 15px;
+    background:#2563eb;
+}
+
+.close-chat{
+    border:0;
+    background:none;
+    color:white;
+    font-size:25px;
+}
+
+.chat-messages{
+    height:390px;
+    overflow-y:auto;
+    padding:15px;
+}
+
+.chat-message{
+    width:max-content;
+    max-width:80%;
+    padding:10px 13px;
+    border-radius:15px;
+    background:#334155;
+    margin-bottom:10px;
+    word-wrap:break-word;
+}
+
+.my-message{
+    margin-left:auto;
+    background:#2563eb;
+}
+
+.chat-input{
+    height:70px;
+    display:flex;
+    gap:8px;
+    padding:10px;
+    border-top:1px solid #334155;
+}
+
+.chat-input input{
+    flex:1;
+    border:0;
+    outline:none;
+    border-radius:10px;
+    padding:10px;
+    background:#0f172a;
+    color:white;
+}
+
+.chat-input button{
+    border:0;
+    border-radius:10px;
+    padding:0 15px;
+    background:#2563eb;
+    color:white;
+}
+
+
+.empty{
+    color:#94a3b8;
+    font-size:14px;
+}
+
+
+@media(max-width:1050px){
+
+    .grid{
+        grid-template-columns:250px 1fr;
+    }
+
+    .right-column{
+        grid-column:1/-1;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:20px;
+    }
+}
+
+@media(max-width:700px){
+
+    .navbar{
+        flex-wrap:wrap;
+    }
+
+    .search-wrapper{
+        order:3;
+        flex-basis:100%;
+        max-width:none;
+    }
+
+    .nav-right{
+        margin-left:auto;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .right-column{
+        display:block;
+    }
+
+    .chat-window{
+        width:calc(100% - 20px);
+        right:10px;
+        bottom:10px;
+    }
+
+    .public-stats{
+        gap:20px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div class="auth-page" id="loginPage">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            🔥 Friend<span>Zone</span>
+        </div>
+
+        <div class="auth-subtitle">
+            Connect. Post. Chat. Keep your streak alive.
+        </div>
+
+        <h2>Log In</h2>
+
+        <input
+            class="input"
+            id="loginEmail"
+            type="email"
+            placeholder="Email">
+
+        <input
+            class="input"
+            id="loginPassword"
+            type="password"
+            placeholder="Password">
+
+        <button
+            class="primary-btn"
+            onclick="login()">
+            LOG IN
+        </button>
+
+        <div
+            class="switch"
+            onclick="showSignup()">
+            Don't have an account?
+            <b>Sign Up</b>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div
+    class="auth-page"
+    id="signupPage"
+    style="display:none;">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            🔥 Friend<span>Zone</span>
+        </div>
+
+        <div class="auth-subtitle">
+            Create your social media account.
+        </div>
+
+        <h2>Sign Up</h2>
+
+        <input
+            class="input"
+            id="signupName"
+            type="text"
+            placeholder="Full Name">
+
+        <input
+            class="input"
+            id="signupEmail"
+            type="email"
+            placeholder="Email">
+
+        <input
+            class="input"
+            id="signupPassword"
+            type="password"
+            placeholder="Password">
+
+        <button
+            class="primary-btn"
+            onclick="signup()">
+            CREATE ACCOUNT
+        </button>
+
+        <div
+            class="switch"
+            onclick="showLogin()">
+            Already have an account?
+            <b>Log In</b>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div id="app">
+
+<nav class="navbar">
+
+    <div class="logo">
+        🔥 Friend<span>Zone</span>
+    </div>
+
+    <div class="search-wrapper">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="🔎 Search people..."
+            oninput="searchUsers()"
+            onfocus="searchUsers()">
+
+        <div
+            class="search-results"
+            id="searchResults">
+        </div>
+
+    </div>
+
+    <div class="nav-right">
+
+        <button
+            class="nav-btn"
+            onclick="scrollToMessages()">
+            💬
+        </button>
+
+        <button
+            class="nav-btn settings-btn"
+            onclick="openPrivacySettings()">
+            ⚙️
+        </button>
+
+        <button
+            class="nav-btn signout"
+            onclick="signout()">
+            Sign Out
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+<div class="grid">
+
+
+
+<aside>
+
+<div class="card profile-card">
+
+    <div class="cover"></div>
+
+    <div class="avatar">
+        👤
+    </div>
+
+    <h2 id="profileName">
+        User
+    </h2>
+
+    <div
+        class="username"
+        id="profileEmail">
+        user@email.com
+    </div>
+
+    <p
+        class="bio"
+        id="profileBio">
+        Welcome to FriendZone!
+    </p>
+
+    <div id="profileWebsite"></div>
+
+    <button
+        class="edit-profile-btn"
+        onclick="openEditProfile()">
+        ✏️ Edit Profile
+    </button>
+
+    <div class="profile-stats">
+
+        <div>
+            <strong id="postCount">0</strong>
+            <span>Posts</span>
+        </div>
+
+        <div>
+            <strong id="friendCount">0</strong>
+            <span>Friends</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="card streak-card">
+
+    <div class="fire">
+        🔥
+    </div>
+
+    <div
+        class="streak-number"
+        id="streakNumber">
+        0
+    </div>
+
+    <h3>
+        Day Streak
+    </h3>
+
+    <p>
+        Keep connecting every day!
+    </p>
+
+    <button
+        class="restore-btn"
+        onclick="restoreStreak()">
+        🔥 Restore Streak
+    </button>
+
+    <div
+        class="restore-count"
+        id="restoreCount">
+        5 streak restores remaining this month
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <h3>
+        👥 My Friends
+    </h3>
+
+    <br>
+
+    <div id="friendsList">
+
+        <p class="empty">
+            No friends yet.
+        </p>
+
+    </div>
+
+</div>
+
+</aside>
+
+
+<section>
+
+<div class="card create-post">
+
+    <h2>
+        📝 Create a Post
+    </h2>
+
+    <textarea
+        id="postText"
+        placeholder="What's happening?">
+    </textarea>
+
+    <button
+        class="post-btn"
+        onclick="createPost()">
+        POST
+    </button>
+
+</div>
+
+<div id="postsContainer"></div>
+
+</section>
+
+
+<aside class="right-column">
+
+
+
+<div class="card">
+
+    <h3>
+        🔔 Friend Requests
+    </h3>
+
+    <br>
+
+    <div id="friendRequests">
+
+        <p class="empty">
+            No friend requests.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<div class="card">
+
+    <h3>
+        🏆 Streak Leaderboard
+    </h3>
+
+    <br>
+
+    <div id="leaderboard">
+
+        <p class="empty">
+            No users yet.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<div class="card">
+
+    <h3>
+        🔥 Friend Streaks
+    </h3>
+
+    <br>
+
+    <div id="friendStreaks">
+
+        <p class="empty">
+            Add friends to start streaks.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div
+    class="card"
+    id="messagesSection">
+
+    <h3>
+        💬 Messages
+    </h3>
+
+    <br>
+
+    <div id="messageList">
+
+        <p class="empty">
+            Add friends to start messaging.
+        </p>
+
+    </div>
+
+</div>
+
+</aside>
+
+</div>
+
+</main>
+
+</div>
+
+
+
+<div
+    class="modal"
+    id="profileModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                👤 Profile
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeProfile()">
+                ×
+            </button>
+
+        </div>
+
+        <div id="profileModalBody"></div>
+
+    </div>
+
+</div>
+
+
+
+<div
+    class="modal"
+    id="editProfileModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                ✏️ Edit Profile
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeEditProfile()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="profile-edit-field">
+
+            <label>
+                Display Name
+            </label>
+
+            <input
+                id="editName"
+                type="text"
+                placeholder="Your name">
+
+        </div>
+
+        <div class="profile-edit-field">
+
+            <label>
+                Bio
+            </label>
+
+            <textarea
+                id="editBioInput"
+                maxlength="160"
+                placeholder="Write your bio...">
+            </textarea>
+
+        </div>
+
+        <div class="profile-edit-field">
+
+            <label>
+                Website Link
+            </label>
+
+            <input
+                id="editWebsite"
+                type="text"
+                placeholder="https://example.com">
+
+        </div>
+
+        <button
+            class="save-profile"
+            onclick="saveProfile()">
+            💾 SAVE PROFILE
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<div
+    class="modal"
+    id="privacyModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                ⚙️ Privacy Settings
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closePrivacySettings()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="setting-group">
+
+            <h3>
+                👤 Profile Visibility
+            </h3>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="profilePrivacy"
+                    value="public">
+
+                🌎 <b>Public</b>
+
+                <br>
+
+                <small>
+                    Anyone can view your profile.
+                </small>
+
+            </label>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="profilePrivacy"
+                    value="friends">
+
+                👥 <b>Friends Only</b>
+
+                <br>
+
+                <small>
+                    Only accepted friends can view your profile.
+                </small>
+
+            </label>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="profilePrivacy"
+                    value="private">
+
+                🔒 <b>Private</b>
+
+                <br>
+
+                <small>
+                    Only you can view your profile.
+                </small>
+
+            </label>
+
+        </div>
+
+        <div class="setting-group">
+
+            <h3>
+                📧 Email Visibility
+            </h3>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="emailPrivacy"
+                    value="show">
+
+                Show my email
+
+            </label>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="emailPrivacy"
+                    value="hide">
+
+                Hide my email
+
+            </label>
+
+        </div>
+
+        <div class="setting-group">
+
+            <h3>
+                📝 Post Visibility
+            </h3>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="postPrivacy"
+                    value="public">
+
+                🌎 Public Posts
+
+            </label>
+
+            <label class="setting-option">
+
+                <input
+                    type="radio"
+                    name="postPrivacy"
+                    value="friends">
+
+                👥 Friends Only
+
+            </label>
+
+        </div>
+
+        <button
+            class="save-settings"
+            onclick="savePrivacySettings()">
+            💾 SAVE PRIVACY SETTINGS
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<div
+    class="chat-window"
+    id="chatWindow">
+
+    <div class="chat-header">
+
+        <strong id="chatName">
+            Friend
+        </strong>
+
+        <button
+            class="close-chat"
+            onclick="closeChat()">
+            ×
+        </button>
+
+    </div>
+
+    <div
+        class="chat-messages"
+        id="chatMessages">
+    </div>
+
+    <div class="chat-input">
+
+        <input
+            id="messageInput"
+            type="text"
+            placeholder="Type a message..."
+            onkeydown="
+                if(event.key === 'Enter')
+                sendMessage()
+            ">
+
+        <button
+            onclick="sendMessage()">
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+
+function getUsers(){
+
+    return JSON.parse(
+        localStorage.getItem("friendzoneUsers")
+    ) || [];
+
+}
+
+function saveUsers(users){
+
+    localStorage.setItem(
+        "friendzoneUsers",
+        JSON.stringify(users)
+    );
+
+}
+
+function getCurrentUser(){
+
+    const email =
+        localStorage.getItem(
+            "friendzoneCurrentUser"
+        );
+
+    return getUsers().find(
+        user => user.email === email
+    );
+
+}
+
+function saveCurrentUser(user){
+
+    let users = getUsers();
+
+    const index =
+        users.findIndex(
+            u => u.email === user.email
+        );
+
+    if(index !== -1){
+        users[index] = user;
+    }
+
+    saveUsers(users);
+
+}
+
+
+
+function signup(){
+
+    const name =
+        document.getElementById(
+            "signupName"
+        ).value.trim();
+
+    const email =
+        document.getElementById(
+            "signupEmail"
+        ).value.trim().toLowerCase();
+
+    const password =
+        document.getElementById(
+            "signupPassword"
+        ).value;
+
+    if(!name || !email || !password){
+
+        alert(
+            "Please complete all fields."
+        );
+
+        return;
+
+    }
+
+    let users = getUsers();
+
+    if(
+        users.some(
+            user => user.email === email
+        )
+    ){
+
+        alert(
+            "This email is already registered."
+        );
+
+        return;
+
+    }
+
+    users.push({
+
+        id:Date.now(),
+
+        name:name,
+
+        email:email,
+
+        password:password,
+
+        bio:"Hey! I'm new to FriendZone 👋",
+
+        website:"",
+
+        friends:[],
+
+        incomingRequests:[],
+
+        outgoingRequests:[],
+
+        streak:0,
+
+        lastActive:null,
+
+        streakRestores:{
+            month:getCurrentMonth(),
+            used:0
+        },
+
+        privacy:{
+            profile:"public",
+            email:"hide",
+            posts:"public"
+        }
+
+    });
+
+    saveUsers(users);
+
+    alert(
+        "Account created successfully!"
+    );
+
+    showLogin();
+
+}
+
+
+function login(){
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim().toLowerCase();
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    const user =
+        getUsers().find(
+            u =>
+            u.email === email &&
+            u.password === password
+        );
+
+    if(!user){
+
+        alert(
+            "Incorrect email or password."
+        );
+
+        return;
+
+    }
+
+    localStorage.setItem(
+        "friendzoneCurrentUser",
+        user.email
+    );
+
+    localStorage.setItem(
+        "friendzoneLoggedIn",
+        "true"
+    );
+
+    openApp();
+
+}
+
+
+
+
+function signout(){
+
+    localStorage.removeItem(
+        "friendzoneCurrentUser"
+    );
+
+    localStorage.removeItem(
+        "friendzoneLoggedIn"
+    );
+
+    document.getElementById(
+        "app"
+    ).style.display="none";
+
+    document.getElementById(
+        "loginPage"
+    ).style.display="flex";
+
+    closeChat();
+
+}
+
+
+
+function showSignup(){
+
+    document.getElementById(
+        "loginPage"
+    ).style.display="none";
+
+    document.getElementById(
+        "signupPage"
+    ).style.display="flex";
+
+}
+
+function showLogin(){
+
+    document.getElementById(
+        "signupPage"
+    ).style.display="none";
+
+    document.getElementById(
+        "loginPage"
+    ).style.display="flex";
+
+}
+
+
+
+
+function getCurrentMonth(){
+
+    const now = new Date();
+
+    return `${now.getFullYear()}-${now.getMonth()+1}`;
+
+}
+
+
+
+function prepareRestoreCounter(user){
+
+    const month =
+        getCurrentMonth();
+
+    if(
+        !user.streakRestores ||
+        user.streakRestores.month !== month
+    ){
+
+        user.streakRestores = {
+
+            month:month,
+
+            used:0
+
+        };
+
+        saveCurrentUser(user);
+
+    }
+
+}
+
+
+
+function openApp(){
+
+    document.getElementById(
+        "loginPage"
+    ).style.display="none";
+
+    document.getElementById(
+        "signupPage"
+    ).style.display="none";
+
+    document.getElementById(
+        "app"
+    ).style.display="block";
+
+    const user = getCurrentUser();
+
+    if(user){
+
+        prepareRestoreCounter(user);
+
+    }
+
+    updateProfile();
+
+    loadPosts();
+
+    loadFriends();
+
+    loadRequests();
+
+    loadFriendStreaks();
+
+    loadLeaderboard();
+
+    loadMessagesList();
+
+    updateRestoreCount();
+
+    updateStreakStatus();
+
+}
+
+
+
+function updateProfile(){
+
+    const user =
+        getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    document.getElementById(
+        "profileName"
+    ).innerText =
+        user.name;
+
+    document.getElementById(
+        "profileEmail"
+    ).innerText =
+        user.email;
+
+    document.getElementById(
+        "profileBio"
+    ).innerText =
+        user.bio ||
+        "Welcome to FriendZone!";
+
+    document.getElementById(
+        "streakNumber"
+    ).innerText =
+        user.streak;
+
+    const website =
+        document.getElementById(
+            "profileWebsite"
+        );
+
+    if(user.website){
+
+        website.innerHTML=`
+
+            <a
+                class="website-link"
+                href="${safeURL(user.website)}"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                🔗 Visit My Website
+
+            </a>
+
+        `;
+
+    }else{
+
+        website.innerHTML="";
+
+    }
+
+    const posts =
+        getPosts();
+
+    document.getElementById(
+        "postCount"
+    ).innerText =
+        posts.filter(
+            post =>
+            post.email === user.email
+        ).length;
+
+    document.getElementById(
+        "friendCount"
+    ).innerText =
+        user.friends.length;
+
+}
+
+
+
+function openEditProfile(){
+
+    const user =
+        getCurrentUser();
+
+    document.getElementById(
+        "editName"
+    ).value =
+        user.name;
+
+    document.getElementById(
+        "editBioInput"
+    ).value =
+        user.bio || "";
+
+    document.getElementById(
+        "editWebsite"
+    ).value =
+        user.website || "";
+
+    document.getElementById(
+        "editProfileModal"
+    ).style.display="flex";
+
+}
+
+function closeEditProfile(){
+
+    document.getElementById(
+        "editProfileModal"
+    ).style.display="none";
+
+}
+
+function saveProfile(){
+
+    const user =
+        getCurrentUser();
+
+    const name =
+        document.getElementById(
+            "editName"
+        ).value.trim();
+
+    const bio =
+        document.getElementById(
+            "editBioInput"
+        ).value.trim();
+
+    const website =
+        document.getElementById(
+            "editWebsite"
+        ).value.trim();
+
+    if(!name){
+
+        alert(
+            "Name cannot be empty."
+        );
+
+        return;
+
+    }
+
+    user.name = name;
+
+    user.bio =
+        bio.substring(0,160);
+
+    user.website =
+        website;
+
+    saveCurrentUser(user);
+
+
+    let posts = getPosts();
+
+    posts.forEach(post=>{
+
+        if(
+            post.email === user.email
+        ){
+
+            post.name =
+                user.name;
+
+        }
+
+    });
+
+    savePosts(posts);
+
+    closeEditProfile();
+
+    updateProfile();
+
+    loadPosts();
+
+}
+
+
+function searchUsers(){
+
+    const query =
+        document.getElementById(
+            "searchInput"
+        ).value
+        .trim()
+        .toLowerCase();
+
+    const results =
+        document.getElementById(
+            "searchResults"
+        );
+
+    if(!query){
+
+        results.style.display="none";
+
+        return;
+
+    }
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers().filter(
+            user =>
+            user.email !== current.email &&
+            (
+                user.name
+                .toLowerCase()
+                .includes(query)
+                ||
+                user.email
+                .toLowerCase()
+                .includes(query)
+            )
+        );
+
+    results.innerHTML="";
+
+    if(users.length===0){
+
+        results.innerHTML=`
+
+            <p
+                class="empty"
+                style="padding:15px;">
+
+                No users found.
+
+            </p>
+
+        `;
+
+        results.style.display="block";
+
+        return;
+
+    }
+
+    users.forEach(user=>{
+
+        const status =
+            getFriendStatus(
+                current,
+                user
+            );
+
+        let action="";
+
+        if(status==="friend"){
+
+            action=`
+
+                <button
+                    onclick="
+                    viewProfile(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    View
+
+                </button>
+
+            `;
+
+        }else if(status==="sent"){
+
+            action=`
+
+                <button disabled>
+                    Sent
+                </button>
+
+            `;
+
+        }else if(status==="received"){
+
+            action=`
+
+                <button
+                    onclick="
+                    acceptFriendRequest(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    Accept
+
+                </button>
+
+            `;
+
+        }else{
+
+            action=`
+
+                <button
+                    onclick="
+                    sendFriendRequest(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    + Add
+
+                </button>
+
+            `;
+
+        }
+
+        results.innerHTML += `
+
+            <div class="search-user">
+
+                <div
+                    class="search-avatar"
+                    onclick="
+                    viewProfile(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    👤
+
+                </div>
+
+                <div
+                    class="search-user-info"
+                    onclick="
+                    viewProfile(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    <div class="search-user-name">
+
+                        ${escapeHTML(
+                            user.name
+                        )}
+
+                    </div>
+
+                    <div class="search-user-email">
+
+                        ${escapeHTML(
+                            user.email
+                        )}
+
+                    </div>
+
+                </div>
+
+                ${action}
+
+            </div>
+
+        `;
+
+    });
+
+    results.style.display="block";
+
+}
+
+
+
+function getFriendStatus(current,other){
+
+    if(
+        current.friends.includes(
+            other.email
+        )
+    ){
+        return "friend";
+    }
+
+    if(
+        current.outgoingRequests.includes(
+            other.email
+        )
+    ){
+        return "sent";
+    }
+
+    if(
+        current.incomingRequests.includes(
+            other.email
+        )
+    ){
+        return "received";
+    }
+
+    return "none";
+
+}
+
+
+
+
+function sendFriendRequest(email){
+
+    let users =
+        getUsers();
+
+    const current =
+        users.find(
+            u =>
+            u.email ===
+            getCurrentUser().email
+        );
+
+    const target =
+        users.find(
+            u =>
+            u.email === email
+        );
+
+    if(!target){
+        return;
+    }
+
+    if(
+        !current.outgoingRequests.includes(
+            email
+        )
+    ){
+
+        current.outgoingRequests.push(
+            email
+        );
+
+    }
+
+    if(
+        !target.incomingRequests.includes(
+            current.email
+        )
+    ){
+
+        target.incomingRequests.push(
+            current.email
+        );
+
+    }
+
+    saveUsers(users);
+
+    alert(
+        "Friend request sent to " +
+        target.name
+    );
+
+    searchUsers();
+
+    loadRequests();
+
+}
+
+
+
+function acceptFriendRequest(email){
+
+    let users =
+        getUsers();
+
+    const current =
+        users.find(
+            u =>
+            u.email ===
+            getCurrentUser().email
+        );
+
+    const requester =
+        users.find(
+            u =>
+            u.email === email
+        );
+
+    if(!requester){
+        return;
+    }
+
+    if(
+        !current.friends.includes(
+            requester.email
+        )
+    ){
+
+        current.friends.push(
+            requester.email
+        );
+
+    }
+
+    if(
+        !requester.friends.includes(
+            current.email
+        )
+    ){
+
+        requester.friends.push(
+            current.email
+        );
+
+    }
+
+    current.incomingRequests =
+        current.incomingRequests.filter(
+            e => e !== requester.email
+        );
+
+    requester.outgoingRequests =
+        requester.outgoingRequests.filter(
+            e => e !== current.email
+        );
+
+    saveUsers(users);
+
+    alert(
+        "You are now friends with " +
+        requester.name
+    );
+
+    updateProfile();
+
+    loadFriends();
+
+    loadRequests();
+
+    loadFriendStreaks();
+
+    loadMessagesList();
+
+    searchUsers();
+
+}
+
+
+
+function declineFriendRequest(email){
+
+    let users =
+        getUsers();
+
+    const current =
+        users.find(
+            u =>
+            u.email ===
+            getCurrentUser().email
+        );
+
+    const requester =
+        users.find(
+            u =>
+            u.email === email
+        );
+
+    current.incomingRequests =
+        current.incomingRequests.filter(
+            e => e !== email
+        );
+
+    if(requester){
+
+        requester.outgoingRequests =
+            requester.outgoingRequests.filter(
+                e =>
+                e !== current.email
+            );
+
+    }
+
+    saveUsers(users);
+
+    loadRequests();
+
+}
+
+
+
+
+function loadFriends(){
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers();
+
+    const container =
+        document.getElementById(
+            "friendsList"
+        );
+
+    container.innerHTML="";
+
+    if(
+        current.friends.length===0
+    ){
+
+        container.innerHTML=`
+
+            <p class="empty">
+                No friends yet.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+    current.friends.forEach(email=>{
+
+        const friend =
+            users.find(
+                u =>
+                u.email === email
+            );
+
+        if(!friend){
+            return;
+        }
+
+        container.innerHTML += `
+
+            <div class="friend">
+
+                <div class="friend-info">
+
+                    <div
+                        class="friend-avatar"
+                        onclick="
+                        viewProfile(
+                            '${escapeAttribute(
+                                friend.email
+                            )}'
+                        )">
+
+                        👤
+
+                    </div>
+
+                    <div
+                        class="friend-name"
+                        onclick="
+                        viewProfile(
+                            '${escapeAttribute(
+                                friend.email
+                            )}'
+                        )">
+
+                        <strong>
+
+                            ${escapeHTML(
+                                friend.name
+                            )}
+
+                        </strong>
+
+                        <div style="
+                            color:#f97316;
+                            font-size:11px;
+                        ">
+
+                            🔥
+                            ${friend.streak}
+                            days
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="friend-actions">
+
+                    <button
+                        onclick="
+                        openChat(
+                            '${escapeAttribute(
+                                friend.email
+                            )}'
+                        )">
+
+                        💬
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+
+function loadRequests(){
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers();
+
+    const container =
+        document.getElementById(
+            "friendRequests"
+        );
+
+    container.innerHTML="";
+
+    if(
+        current.incomingRequests.length===0
+    ){
+
+        container.innerHTML=`
+
+            <p class="empty">
+                No friend requests.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+    current.incomingRequests.forEach(email=>{
+
+        const requester =
+            users.find(
+                u =>
+                u.email === email
+            );
+
+        if(!requester){
+            return;
+        }
+
+        container.innerHTML += `
+
+            <div class="request">
+
+                <div class="request-avatar">
+                    👤
+                </div>
+
+                <div class="request-info">
+
+                    <strong>
+                        ${escapeHTML(
+                            requester.name
+                        )}
+                    </strong>
+
+                    <div style="
+                        color:#94a3b8;
+                        font-size:11px;
+                    ">
+
+                        wants to be your friend
+
+                    </div>
+
+                </div>
+
+                <div class="request-buttons">
+
+                    <button
+                        class="accept-btn"
+                        onclick="
+                        acceptFriendRequest(
+                            '${escapeAttribute(
+                                email
+                            )}'
+                        )">
+
+                        ✓
+
+                    </button>
+
+                    <button
+                        class="decline-btn"
+                        onclick="
+                        declineFriendRequest(
+                            '${escapeAttribute(
+                                email
+                            )}'
+                        )">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+
+function loadFriendStreaks(){
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers();
+
+    const container =
+        document.getElementById(
+            "friendStreaks"
+        );
+
+    container.innerHTML="";
+
+    if(
+        current.friends.length===0
+    ){
+
+        container.innerHTML=`
+
+            <p class="empty">
+                Add friends to start streaks.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+    current.friends.forEach(email=>{
+
+        const friend =
+            users.find(
+                u =>
+                u.email === email
+            );
+
+        if(!friend){
+            return;
+        }
+
+        container.innerHTML += `
+
+            <div class="friend">
+
+                <div class="friend-info">
+
+                    <div class="friend-avatar">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(
+                                friend.name
+                            )}
+                        </strong>
+
+                        <div style="
+                            color:#f97316;
+                            font-size:13px;
+                        ">
+
+                            🔥
+                            ${friend.streak}
+                            days
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+
+
+function getPosts(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "friendzonePosts"
+        )
+    ) || [];
+
+}
+
+function savePosts(posts){
+
+    localStorage.setItem(
+        "friendzonePosts",
+        JSON.stringify(posts)
+    );
+
+}
+
+function createPost(){
+
+    const text =
+        document.getElementById(
+            "postText"
+        ).value.trim();
+
+    if(!text){
+
+        alert(
+            "Please write something."
+        );
+
+        return;
+
+    }
+
+    const user =
+        getCurrentUser();
+
+    let posts =
+        getPosts();
+
+    posts.unshift({
+
+        id:Date.now(),
+
+        email:user.email,
+
+        name:user.name,
+
+        text:text,
+
+        likes:0,
+
+        date:new Date().toLocaleString(),
+
+        edited:false,
+
+        privacy:user.privacy.posts
+
+    });
+
+    savePosts(posts);
+
+    document.getElementById(
+        "postText"
+    ).value="";
+
+    updateStreak();
+
+    loadPosts();
+
+}
+
+
+
+function canViewPost(post){
+
+    const current =
+        getCurrentUser();
+
+    if(
+        post.email ===
+        current.email
+    ){
+        return true;
+    }
+
+    const owner =
+        getUsers().find(
+            u =>
+            u.email === post.email
+        );
+
+    if(!owner){
+        return false;
+    }
+
+    const privacy =
+        owner.privacy?.posts ||
+        "public";
+
+    if(privacy==="public"){
+        return true;
+    }
+
+    if(privacy==="friends"){
+
+        return owner.friends.includes(
+            current.email
+        );
+
+    }
+
+    return false;
+
+}
+
+
+
+function loadPosts(){
+
+    const posts =
+        getPosts();
+
+    const container =
+        document.getElementById(
+            "postsContainer"
+        );
+
+    container.innerHTML="";
+
+    const current =
+        getCurrentUser();
+
+    posts.forEach(post=>{
+
+        if(!canViewPost(post)){
+            return;
+        }
+
+        let actions = `
+
+            <button
+                onclick="
+                likePost(${post.id})
+                ">
+
+                ❤️ ${post.likes}
+
+            </button>
+
+        `;
+
+        if(
+            post.email ===
+            current.email
+        ){
+
+            actions += `
+
+                <button
+                    onclick="
+                    editPost(${post.id})
+                    ">
+
+                    ✏️ Edit
+
+                </button>
+
+                <button
+                    onclick="
+                    deletePost(${post.id})
+                    ">
+
+                    🗑️ Delete
+
+                </button>
+
+            `;
+
+        }
+
+        container.innerHTML += `
+
+            <div class="post">
+
+                <div class="post-header">
+
+                    <div class="post-avatar">
+                        👤
+                    </div>
+
+                    <div
+                        class="post-user"
+                        onclick="
+                        viewProfile(
+                            '${escapeAttribute(
+                                post.email
+                            )}'
+                        )">
+
+                        <strong>
+                            ${escapeHTML(
+                                post.name
+                            )}
+                        </strong>
+
+                        <div class="post-time">
+
+                            ${escapeHTML(
+                                post.date
+                            )}
+
+                            ${
+                                post.edited
+                                ?
+                                " • Edited"
+                                :
+                                ""
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="post-content">
+
+                    ${escapeHTML(
+                        post.text
+                    )}
+
+                </div>
+
+                <div class="post-actions">
+
+                    ${actions}
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+    updateProfile();
+
+}
+
+
+function editPost(id){
+
+    let posts =
+        getPosts();
+
+    const current =
+        getCurrentUser();
+
+    const post =
+        posts.find(
+            p =>
+            p.id === id
+        );
+
+    if(
+        !post ||
+        post.email !==
+        current.email
+    ){
+
+        return;
+
+    }
+
+    const newText =
+        prompt(
+            "Edit your post:",
+            post.text
+        );
+
+    if(newText===null){
+        return;
+    }
+
+    if(!newText.trim()){
+
+        alert(
+            "Post cannot be empty."
+        );
+
+        return;
+
+    }
+
+    post.text =
+        newText.trim();
+
+    post.edited=true;
+
+    savePosts(posts);
+
+    loadPosts();
+
+}
+
+
+
+function deletePost(id){
+
+    let posts =
+        getPosts();
+
+    const current =
+        getCurrentUser();
+
+    const post =
+        posts.find(
+            p =>
+            p.id === id
+        );
+
+    if(
+        !post ||
+        post.email !==
+        current.email
+    ){
+        return;
+    }
+
+    if(
+        !confirm(
+            "Delete this post?"
+        )
+    ){
+        return;
+    }
+
+    posts =
+        posts.filter(
+            p =>
+            p.id !== id
+        );
+
+    savePosts(posts);
+
+    loadPosts();
+
+}
+
+
+
+function likePost(id){
+
+    let posts =
+        getPosts();
+
+    const post =
+        posts.find(
+            p =>
+            p.id === id
+        );
+
+    if(post){
+        post.likes++;
+    }
+
+    savePosts(posts);
+
+    loadPosts();
+
+}
+
+
+
+function updateStreak(){
+
+    let users =
+        getUsers();
+
+    const email =
+        localStorage.getItem(
+            "friendzoneCurrentUser"
+        );
+
+    const user =
+        users.find(
+            u =>
+            u.email === email
+        );
+
+    if(!user){
+        return;
+    }
+
+    const today =
+        new Date();
+
+    const todayString =
+        today.toDateString();
+
+    prepareRestoreCounter(user);
+
+    if(
+        user.lastActive ===
+        todayString
+    ){
+
+        return;
+
+    }
+
+    if(user.lastActive){
+
+        const previous =
+            new Date(
+                user.lastActive
+            );
+
+        const difference =
+            Math.floor(
+                (
+                    today -
+                    previous
+                )
+                /
+                (
+                    1000*60*60*24
+                )
+            );
+
+        if(difference===1){
+
+            user.streak++;
+
+        }else if(difference>1){
+
+
+            user.streakMissed=true;
+
+        }
+
+    }else{
+
+        user.streak=1;
+
+    }
+
+    user.lastActive =
+        todayString;
+
+    saveUsers(users);
+
+    updateProfile();
+
+    loadFriendStreaks();
+
+    loadLeaderboard();
+
+    updateRestoreCount();
+
+}
+
+
+
+function updateStreakStatus(){
+
+    const user =
+        getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    if(!user.lastActive){
+
+        return;
+
+    }
+
+    const last =
+        new Date(
+            user.lastActive
+        );
+
+    const today =
+        new Date();
+
+    const difference =
+        Math.floor(
+            (
+                today -
+                last
+            )
+            /
+            (
+                1000*60*60*24
+            )
+        );
+
+    if(difference>1){
+
+        user.streakMissed=true;
+
+        saveCurrentUser(user);
+
+    }
+
+    updateRestoreCount();
+
+}
+
+
+function restoreStreak(){
+
+    const user =
+        getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    prepareRestoreCounter(user);
+
+    if(
+        user.streak<=0
+    ){
+
+        alert(
+            "You don't have a streak to restore."
+        );
+
+        return;
+
+    }
+
+    if(
+        !user.streakMissed
+    ){
+
+        alert(
+            "Your streak has not been missed."
+        );
+
+        return;
+
+    }
+
+    if(
+        user.streakRestores.used>=5
+    ){
+
+        alert(
+            "You have used all 5 streak restores for this month."
+        );
+
+        return;
+
+    }
+
+    const confirmed =
+        confirm(
+            "🔥 Restore your missed streak?\n\n" +
+            "You have " +
+            (
+                5 -
+                user.streakRestores.used
+            ) +
+            " restore(s) remaining this month."
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    user.streakRestores.used++;
+
+    user.streakMissed=false;
+
+    user.lastActive =
+        new Date().toDateString();
+
+    saveCurrentUser(user);
+
+    updateProfile();
+
+    loadLeaderboard();
+
+    loadFriendStreaks();
+
+    updateRestoreCount();
+
+    alert(
+        "🔥 Your streak has been restored!"
+    );
+
+}
+
+
+
+function updateRestoreCount(){
+
+    const user =
+        getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    prepareRestoreCounter(user);
+
+    const remaining =
+        5 -
+        user.streakRestores.used;
+
+    document.getElementById(
+        "restoreCount"
+    ).innerText =
+        `${remaining} streak restore(s) remaining this month`;
+
+}
+
+
+
+function loadLeaderboard(){
+
+    const users =
+        getUsers();
+
+    const container =
+        document.getElementById(
+            "leaderboard"
+        );
+
+    if(!container){
+        return;
+    }
+
+    container.innerHTML="";
+
+    if(users.length===0){
+
+        container.innerHTML=`
+
+            <p class="empty">
+                No users yet.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+    const sorted =
+        [...users].sort(
+            (a,b)=>
+            b.streak-a.streak
+        );
+
+    sorted
+        .slice(0,10)
+        .forEach(
+            (user,index)=>{
+
+                let medal;
+
+                if(index===0){
+                    medal="🥇";
+                }else if(index===1){
+                    medal="🥈";
+                }else if(index===2){
+                    medal="🥉";
+                }else{
+                    medal=
+                        `#${index+1}`;
+                }
+
+                container.innerHTML += `
+
+                    <div
+                        class="leaderboard-row"
+                        onclick="
+                        viewProfile(
+                            '${escapeAttribute(
+                                user.email
+                            )}'
+                        )">
+
+                        <div class="rank">
+
+                            ${medal}
+
+                        </div>
+
+                        <div class="leaderboard-avatar">
+
+                            👤
+
+                        </div>
+
+                        <div class="leaderboard-info">
+
+                            <strong>
+
+                                ${escapeHTML(
+                                    user.name
+                                )}
+
+                            </strong>
+
+                            <div
+                                class="leaderboard-streak">
+
+                                🔥
+                                ${user.streak}
+                                days
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+function viewProfile(email){
+
+    const current =
+        getCurrentUser();
+
+    const user =
+        getUsers().find(
+            u =>
+            u.email === email
+        );
+
+    if(!user){
+        return;
+    }
+
+    if(
+        user.email !==
+        current.email
+    ){
+
+        const privacy =
+            user.privacy?.profile ||
+            "public";
+
+        if(privacy==="private"){
+
+            alert(
+                "🔒 This profile is private."
+            );
+
+            return;
+
+        }
+
+        if(
+            privacy==="friends" &&
+            !user.friends.includes(
+                current.email
+            )
+        ){
+
+            alert(
+                "👥 This profile is only visible to friends."
+            );
+
+            return;
+
+        }
+
+    }
+
+    const isFriend =
+        user.friends.includes(
+            current.email
+        );
+
+    const profilePosts =
+        getPosts().filter(
+            post =>
+            post.email ===
+            user.email &&
+            canViewPost(post)
+        );
+
+    let emailHTML="";
+
+    if(
+        user.email === current.email ||
+        user.privacy?.email==="show"
+    ){
+
+        emailHTML=`
+
+            <div style="
+                color:#94a3b8;
+                margin-bottom:10px;
+            ">
+
+                📧
+                ${escapeHTML(
+                    user.email
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+    let websiteHTML="";
+
+    if(user.website){
+
+        websiteHTML=`
+
+            <a
+                class="public-website"
+                href="${safeURL(
+                    user.website
+                )}"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                🔗 ${escapeHTML(
+                    user.website
+                )}
+
+            </a>
+
+        `;
+
+    }
+
+    let actionHTML="";
+
+    if(
+        user.email !==
+        current.email
+    ){
+
+        if(isFriend){
+
+            actionHTML=`
+
+                <button
+                    onclick="
+                    openChat(
+                        '${escapeAttribute(
+                            user.email
+                        )}'
+                    )">
+
+                    💬 Message
+
+                </button>
+
+            `;
+
+        }else{
+
+            const status =
+                getFriendStatus(
+                    current,
+                    user
+                );
+
+            if(status==="sent"){
+
+                actionHTML=`
+
+                    <button disabled>
+                        Request Sent
+                    </button>
+
+                `;
+
+            }else if(status==="received"){
+
+                actionHTML=`
+
+                    <button
+                        onclick="
+                        acceptFriendRequest(
+                            '${escapeAttribute(
+                                user.email
+                            )}'
+                        )">
+
+                        ✓ Accept Friend
+
+                    </button>
+
+                `;
+
+            }else{
+
+                actionHTML=`
+
+                    <button
+                        onclick="
+                        sendFriendRequest(
+                            '${escapeAttribute(
+                                user.email
+                            )}'
+                        )">
+
+                        + Add Friend
+
+                    </button>
+
+                `;
+
+            }
+
+        }
+
+    }
+
+    document.getElementById(
+        "profileModalBody"
+    ).innerHTML=`
+
+        <div class="public-profile">
+
+            <div class="public-cover"></div>
+
+            <div class="public-avatar">
+                👤
+            </div>
+
+            <h2>
+                ${escapeHTML(
+                    user.name
+                )}
+            </h2>
+
+            ${emailHTML}
+
+            <div class="public-bio">
+
+                ${escapeHTML(
+                    user.bio ||
+                    "No bio yet."
+                )}
+
+            </div>
+
+            ${websiteHTML}
+
+            <div class="public-stats">
+
+                <div>
+
+                    <strong>
+                        ${profilePosts.length}
+                    </strong>
+
+                    <span>
+                        Posts
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        ${user.friends.length}
+                    </strong>
+
+                    <span>
+                        Friends
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        🔥 ${user.streak}
+                    </strong>
+
+                    <span>
+                        Streak
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="profile-action">
+
+                ${actionHTML}
+
+            </div>
+
+        </div>
+
+    `;
+
+    document.getElementById(
+        "profileModal"
+    ).style.display="flex";
+
+}
+
+
+
+function closeProfile(){
+
+    document.getElementById(
+        "profileModal"
+    ).style.display="none";
+
+}
+
+
+
+function openPrivacySettings(){
+
+    const user =
+        getCurrentUser();
+
+    const privacy =
+        user.privacy || {
+            profile:"public",
+            email:"hide",
+            posts:"public"
+        };
+
+    document.querySelector(
+        `input[name="profilePrivacy"][value="${privacy.profile}"]`
+    ).checked=true;
+
+    document.querySelector(
+        `input[name="emailPrivacy"][value="${privacy.email}"]`
+    ).checked=true;
+
+    document.querySelector(
+        `input[name="postPrivacy"][value="${privacy.posts}"]`
+    ).checked=true;
+
+    document.getElementById(
+        "privacyModal"
+    ).style.display="flex";
+
+}
+
+function savePrivacySettings(){
+
+    const user =
+        getCurrentUser();
+
+    const profile =
+        document.querySelector(
+            'input[name="profilePrivacy"]:checked'
+        ).value;
+
+    const email =
+        document.querySelector(
+            'input[name="emailPrivacy"]:checked'
+        ).value;
+
+    const posts =
+        document.querySelector(
+            'input[name="postPrivacy"]:checked'
+        ).value;
+
+    user.privacy={
+
+        profile:profile,
+
+        email:email,
+
+        posts:posts
+
+    };
+
+    saveCurrentUser(user);
+
+    let allPosts =
+        getPosts();
+
+    allPosts.forEach(post=>{
+
+        if(
+            post.email ===
+            user.email
+        ){
+
+            post.privacy =
+                posts;
+
+        }
+
+    });
+
+    savePosts(allPosts);
+
+    closePrivacySettings();
+
+    loadPosts();
+
+    alert(
+        "Privacy settings saved!"
+    );
+
+}
+
+function closePrivacySettings(){
+
+    document.getElementById(
+        "privacyModal"
+    ).style.display="none";
+
+}
+
+
+function getMessages(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "friendzoneMessages"
+        )
+    ) || {};
+
+}
+
+function saveMessages(messages){
+
+    localStorage.setItem(
+        "friendzoneMessages",
+        JSON.stringify(messages)
+    );
+
+}
+
+let currentChat="";
+
+function createChatKey(a,b){
+
+    return [a,b]
+        .sort()
+        .join("__");
+
+}
+
+function openChat(email){
+
+    const current =
+        getCurrentUser();
+
+    if(
+        !current.friends.includes(
+            email
+        )
+    ){
+
+        alert(
+            "You can only message your friends."
+        );
+
+        return;
+
+    }
+
+    const friend =
+        getUsers().find(
+            u =>
+            u.email === email
+        );
+
+    if(!friend){
+        return;
+    }
+
+    currentChat=email;
+
+    document.getElementById(
+        "chatName"
+    ).innerText =
+        friend.name;
+
+    document.getElementById(
+        "chatWindow"
+    ).style.display="block";
+
+    loadChat();
+
+}
+
+function closeChat(){
+
+    document.getElementById(
+        "chatWindow"
+    ).style.display="none";
+
+    currentChat="";
+
+}
+
+function sendMessage(){
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if(
+        !text ||
+        !currentChat
+    ){
+        return;
+    }
+
+    const current =
+        getCurrentUser();
+
+    let messages =
+        getMessages();
+
+    const key =
+        createChatKey(
+            current.email,
+            currentChat
+        );
+
+    if(!messages[key]){
+        messages[key]=[];
+    }
+
+    messages[key].push({
+
+        sender:current.email,
+
+        text:text,
+
+        time:new Date().toLocaleTimeString()
+
+    });
+
+    saveMessages(messages);
+
+    input.value="";
+
+    loadChat();
+
+    loadMessagesList();
+
+}
+
+function loadChat(){
+
+    if(!currentChat){
+        return;
+    }
+
+    const current =
+        getCurrentUser();
+
+    const messages =
+        getMessages();
+
+    const key =
+        createChatKey(
+            current.email,
+            currentChat
+        );
+
+    const chat =
+        messages[key] || [];
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+    container.innerHTML="";
+
+    chat.forEach(message=>{
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.className =
+            message.sender ===
+            current.email
+            ?
+            "chat-message my-message"
+            :
+            "chat-message";
+
+        div.innerText =
+            message.text;
+
+        container.appendChild(div);
+
+    });
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+function loadMessagesList(){
+
+    const current =
+        getCurrentUser();
+
+    const users =
+        getUsers();
+
+    const container =
+        document.getElementById(
+            "messageList"
+        );
+
+    container.innerHTML="";
+
+    if(
+        current.friends.length===0
+    ){
+
+        container.innerHTML=`
+
+            <p class="empty">
+                Add friends to start messaging.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+    current.friends.forEach(email=>{
+
+        const friend =
+            users.find(
+                u =>
+                u.email === email
+            );
+
+        if(!friend){
+            return;
+        }
+
+        const messages =
+            getMessages();
+
+        const key =
+            createChatKey(
+                current.email,
+                friend.email
+            );
+
+        const chat =
+            messages[key] || [];
+
+        const last =
+            chat.length
+            ?
+            chat[chat.length-1].text
+            :
+            "Start a conversation";
+
+        container.innerHTML += `
+
+            <div
+                class="message-row"
+                onclick="
+                openChat(
+                    '${escapeAttribute(
+                        friend.email
+                    )}'
+                )">
+
+                <div class="message-avatar">
+                    👤
+                </div>
+
+                <div class="message-info">
+
+                    <div class="message-name">
+
+                        ${escapeHTML(
+                            friend.name
+                        )}
+
+                    </div>
+
+                    <div class="last-message">
+
+                        ${escapeHTML(
+                            last
+                        )}
+
+                    </div>
+
+                </div>
+
+                💬
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+function scrollToMessages(){
+
+    document.getElementById(
+        "messagesSection"
+    ).scrollIntoView({
+        behavior:"smoth"
+    });
+}
+function safeURL(url){
+
+    url =
+        String(url).trim();
+
+    if(
+        !url.startsWith("http://") &&
+        !url.startsWith("https://")
+    ){
+
+        return "https://" + url;
+
+    }
+
+    return url;
+
+}
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+function escapeAttribute(text){
+
+    return String(text)
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'");
+
+}
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const wrapper =
+            document.querySelector(
+                ".search-wrapper"
+            );
+
+        if(
+            wrapper &&
+            !wrapper.contains(
+                event.target
+            )
+        ){
+
+            document.getElementById(
+                "searchResults"
+            ).style.display="none";
+
+        }
+
+    }
+);
+
+window.onload=function(){
+
+    const loggedIn =
+        localStorage.getItem(
+            "friendzoneLoggedIn"
+        );
+
+    if(
+        loggedIn === "true" &&
+        getCurrentUser()
+    ){
+
+        openApp();
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
